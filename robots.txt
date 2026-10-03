@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sharizaneh.github.io/insight-one-tech/sitemap.xml
