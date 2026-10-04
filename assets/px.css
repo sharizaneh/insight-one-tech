@@ -60,7 +60,7 @@
 .iot .px-act{margin:0;padding:12px;border-radius:10px;background:linear-gradient(135deg,rgba(59,183,214,.14),rgba(59,183,214,.03));border:1px solid rgba(59,183,214,.3);font-size:.9rem;line-height:1.5;color:#D5DDE1;min-height:3.2em}
 .iot .px-note{position:relative;margin:0;padding:6px 22px 18px;font-size:.84rem;color:#7D8991}
 @media (max-width:900px){.iot .px-main{grid-template-columns:1fr}.iot .px-kpis{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:560px){.iot .px-bar{flex-direction:column;align-items:flex-start;padding:14px 16px}.iot .px-ctrl,.iot .px-kpis,.iot .px-main{padding-left:12px;padding-right:12px}.iot .px-cv{height:360px}.iot .px-det dl{grid-template-columns:1fr 1fr}.iot .px-ct span{display:none}}
+@media (max-width:560px){.iot .px-bar{flex-direction:column;align-items:flex-start;padding:14px 16px}.iot .px-ctrl,.iot .px-kpis,.iot .px-main{padding-left:12px;padding-right:12px}.iot .px-cv{height:300px}.iot .px-det dl{grid-template-columns:1fr 1fr}.iot .px-ct span{display:none}}
 @media (prefers-reduced-motion:reduce){.iot .px-live i,.iot .px-busy i{animation:none}}
 @media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){.iot .px{animation:pxin linear both;animation-timeline:view();animation-range:entry 0% cover 30%}}}
 @keyframes pxin{from{opacity:.3;transform:perspective(1600px) rotateX(14deg) translateY(70px) scale(.95)}to{opacity:1;transform:none}}
