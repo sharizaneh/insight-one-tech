@@ -1,0 +1,66 @@
+.iot .pred{padding:clamp(72px,10vw,140px) 0;position:relative}
+.iot .pred .adv{display:inline-block;margin-right:10px;padding:5px 9px;border-radius:6px;background:linear-gradient(90deg,#3BB7D6,#7FD3E8);color:#04141A;font-weight:700;letter-spacing:.12em}
+.iot .pred h2 .gr{display:block;background:linear-gradient(92deg,#7FD3E8,#3BB7D6 50%,#F5B27F);-webkit-background-clip:text;background-clip:text;color:transparent}
+.iot .px{position:relative;margin-top:clamp(28px,4vw,48px);border:1px solid #1F2A30;border-radius:20px;background:linear-gradient(180deg,#0E1317,#0A0E11);overflow:hidden;box-shadow:0 50px 140px -60px rgba(240,138,75,.35),0 40px 120px -70px rgba(59,183,214,.5)}
+.iot .px::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(50% 45% at 75% 0%,rgba(240,138,75,.10),transparent 70%),radial-gradient(50% 50% at 20% 0%,rgba(59,183,214,.12),transparent 70%)}
+.iot .px-bar{position:relative;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid #1A2329;font:500 .72rem/1.2 var(--f-mono,ui-monospace,monospace);letter-spacing:.14em;color:#A8B3BA}
+.iot .px-live{display:flex;align-items:center;gap:10px}.iot .px-live i{width:8px;height:8px;border-radius:50%;background:#F08A4B;animation:dxp2 2s infinite}
+@keyframes dxp2{0%{box-shadow:0 0 0 0 rgba(240,138,75,.6)}70%{box-shadow:0 0 0 9px rgba(240,138,75,0)}100%{box-shadow:0 0 0 0 rgba(240,138,75,0)}}
+.iot .px-tag{color:#F5B27F;border:1px solid rgba(240,138,75,.55);padding:6px 10px;border-radius:6px;white-space:nowrap}
+.iot .px-ctrl{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;padding:18px 22px 6px}
+.iot .px-cap{display:grid;grid-template-columns:auto auto;align-items:center;gap:6px 14px;min-width:min(100%,360px);flex:1}
+.iot .px-cap span,.iot .px-seg span{font:500 .68rem/1 var(--f-mono,ui-monospace,monospace);letter-spacing:.14em;text-transform:uppercase;color:#7D8991}
+.iot .px-cap b{justify-self:end;font:600 .95rem var(--f-mono,ui-monospace,monospace);color:#E9EEF0}
+.iot .px-slider{grid-column:1/-1;-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(90deg,#F08A4B,#F2B35B 30%,#3BB7D6 60%,#7FD3E8);outline:none;margin:6px 0 4px}
+.iot .px-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#E9EEF0;border:4px solid #0B1013;box-shadow:0 0 0 2px #3BB7D6,0 6px 18px rgba(59,183,214,.6);cursor:grab}
+.iot .px-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#E9EEF0;border:4px solid #0B1013;box-shadow:0 0 0 2px #3BB7D6;cursor:grab}
+.iot .px-slider:focus-visible{box-shadow:0 0 0 3px rgba(127,211,232,.5)}
+.iot .px-seg{display:flex;align-items:center;gap:6px}
+.iot .px-seg span{margin-right:6px}
+.iot .px-seg button{appearance:none;cursor:pointer;min-height:38px;padding:8px 13px;border-radius:999px;border:1px solid #26323A;background:#0B1013;color:#C9D3D8;font:500 .82rem/1 var(--f-body,system-ui,sans-serif);transition:all .2s}
+.iot .px-seg button.on{background:#E9EEF0;color:#04141A;border-color:#E9EEF0}
+.iot .px-busy{display:inline-flex;align-items:center;gap:8px;font:500 .7rem var(--f-mono,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:#7FD3E8;opacity:0;transition:opacity .2s}
+.iot .px-busy.on{opacity:1}.iot .px-busy i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(127,211,232,.3);border-top-color:#7FD3E8;animation:spn .7s linear infinite}
+@keyframes spn{to{transform:rotate(360deg)}}
+.iot .px-kpis{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 22px}
+.iot .px-k{position:relative;padding:16px;border:1px solid #1A2329;border-radius:14px;background:#0B1013;overflow:hidden}
+.iot .px-k::after{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,#3BB7D6,transparent)}
+.iot .px-k.warn::after{background:linear-gradient(90deg,#F08A4B,transparent)}
+.iot .px-k span{display:block;font:500 .64rem/1.3 var(--f-mono,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:#7D8991;margin-bottom:10px}
+.iot .px-k b{font:700 clamp(1.7rem,1.2rem + 1.6vw,2.6rem)/1 var(--f-display,system-ui,sans-serif);color:#E9EEF0;font-variant-numeric:tabular-nums}
+.iot .px-k.warn b{color:#F5B27F}.iot .px-k.good b{color:#7FE3B0}
+.iot .px-k small{margin-left:6px;font:500 .78rem var(--f-body,system-ui,sans-serif);color:#93A0A8}
+.iot .px-main{position:relative;display:grid;grid-template-columns:1.7fr 1fr;gap:12px;padding:0 22px 8px}
+.iot .px-chart,.iot .px-side{position:relative;border:1px solid #1A2329;border-radius:14px;background:#0B1013;padding:14px}
+.iot .px-ct{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font:500 .7rem/1.2 var(--f-mono,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:#A8B3BA}
+.iot .px-ct em{font-style:normal}.iot .px-ct span{color:#56636B;letter-spacing:.06em;text-transform:none}
+.iot .px-cv{display:block;width:100%;height:440px;touch-action:pan-y}
+.iot .px-leg{display:flex;flex-wrap:wrap;gap:8px 16px;font:500 .7rem var(--f-mono,ui-monospace,monospace);color:#93A0A8}
+.iot .px-leg span{display:flex;align-items:center;gap:6px}.iot .px-leg i{width:10px;height:10px;border-radius:3px}.iot .px-leg i.dash{width:14px;height:0;border-top:2px dashed #E9EEF0;border-radius:0}
+.iot .px-list{display:grid;gap:4px;margin-bottom:12px}
+.iot .px-row{appearance:none;cursor:pointer;display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;width:100%;min-height:38px;padding:7px 10px;border-radius:9px;border:1px solid transparent;background:transparent;color:#C9D3D8;font:500 .8rem var(--f-mono,ui-monospace,monospace);text-align:left;transition:background .2s,border-color .2s}
+.iot .px-row:hover{background:#111A1F}.iot .px-row.on{background:#13222A;border-color:#2B4652;color:#E9EEF0}
+.iot .px-row .due{color:#7D8991;font-size:.72rem}
+.iot .px-row .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;border:1px solid #26323A;min-width:64px;justify-content:flex-end}
+.iot .px-row .pill i{width:7px;height:7px;border-radius:50%}
+.iot .px-row .pill b{font-weight:600;color:#E9EEF0}
+.iot .px-det{border-top:1px solid #1A2329;padding-top:12px}
+.iot .px-d-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px}
+.iot .px-d-t{font:700 1.1rem var(--f-display,system-ui,sans-serif);color:#E9EEF0}.iot .px-d-due{font:500 .72rem var(--f-mono,ui-monospace,monospace);color:#7D8991}
+.iot .px-det dl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
+.iot .px-det dl div{padding:10px;border-radius:10px;background:#0E161A;border:1px solid #1A2329}
+.iot .px-det dt{font:500 .6rem/1.25 var(--f-mono,ui-monospace,monospace);letter-spacing:.1em;text-transform:uppercase;color:#7D8991;margin-bottom:6px}
+.iot .px-det dd{margin:0;font:700 1rem var(--f-display,system-ui,sans-serif);color:#E9EEF0}
+.iot .px-sub{margin:0 0 8px;font:500 .64rem var(--f-mono,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:#7D8991}
+.iot .px-drv{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px}
+.iot .px-drv li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:.84rem;color:#C9D3D8}
+.iot .px-drv b{font:500 .8rem var(--f-mono,ui-monospace,monospace);color:#E9EEF0}
+.iot .px-drv i{grid-column:1/-1;height:5px;border-radius:3px;background:#162229;position:relative;overflow:hidden}
+.iot .px-drv i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--c);border-radius:3px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.iot .px-act{margin:0;padding:12px;border-radius:10px;background:linear-gradient(135deg,rgba(59,183,214,.14),rgba(59,183,214,.03));border:1px solid rgba(59,183,214,.3);font-size:.9rem;line-height:1.5;color:#D5DDE1;min-height:3.2em}
+.iot .px-note{position:relative;margin:0;padding:6px 22px 18px;font-size:.84rem;color:#7D8991}
+@media (max-width:900px){.iot .px-main{grid-template-columns:1fr}.iot .px-kpis{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.iot .px-bar{flex-direction:column;align-items:flex-start;padding:14px 16px}.iot .px-ctrl,.iot .px-kpis,.iot .px-main{padding-left:12px;padding-right:12px}.iot .px-cv{height:360px}.iot .px-det dl{grid-template-columns:1fr 1fr}.iot .px-ct span{display:none}}
+@media (prefers-reduced-motion:reduce){.iot .px-live i,.iot .px-busy i{animation:none}}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){.iot .px{animation:pxin linear both;animation-timeline:view();animation-range:entry 0% cover 30%}}}
+@keyframes pxin{from{opacity:.3;transform:perspective(1600px) rotateX(14deg) translateY(70px) scale(.95)}to{opacity:1;transform:none}}
