@@ -99,10 +99,14 @@
   }
 
   // Robot arms beside two stations
-  var armMat = new T.MeshStandardMaterial({ color: C(0xd9dee1), metalness: 0.35, roughness: 0.35 });
+  var armMat = new T.MeshStandardMaterial({ color: C(0x8e989e), metalness: 0.75, roughness: 0.38, envMapIntensity: 0.8 });
   var jointMat = new T.MeshStandardMaterial({ color: C(0x2a3136), metalness: 0.7, roughness: 0.3 });
+  var ringMat = new T.MeshStandardMaterial({ color: C(0x3bb7d6), emissive: C(0x3bb7d6), emissiveIntensity: 1.4 });
+  var cargoMat = new T.MeshStandardMaterial({ color: C(0xc9d3d8), metalness: 0.85, roughness: 0.22 });
   function makeArm(x) {
-    var root = new T.Group(); root.position.set(x + 0.95, 0, 1.05); scene.add(root);
+    // Mounted in front of the conveyor, centred in the gap between two stations
+    var root = new T.Group(); root.position.set(x + SPACING / 2, 0, 1.18); scene.add(root);
+    var ring = new T.Mesh(new T.TorusGeometry(0.27, 0.018, 8, 40), ringMat); ring.rotation.x = Math.PI / 2; ring.position.y = 0.02; root.add(ring);
     var base = new T.Mesh(new T.CylinderGeometry(0.2, 0.26, 0.22, 24), jointMat); base.position.y = 0.11; root.add(base);
     var yaw = new T.Group(); yaw.position.y = 0.22; root.add(yaw);
     var sh = new T.Group(); yaw.add(sh);
@@ -110,9 +114,11 @@
     var el = new T.Group(); el.position.y = 0.75; sh.add(el);
     var j = new T.Mesh(new T.SphereGeometry(0.1, 16, 12), jointMat); el.add(j);
     var l2 = new T.Mesh(new T.BoxGeometry(0.11, 0.6, 0.11), armMat); l2.position.y = 0.3; el.add(l2);
-    var tool = new T.Mesh(new T.CylinderGeometry(0.04, 0.06, 0.12, 12), jointMat); tool.position.y = 0.66; el.add(tool);
-    [base, l1, l2, j, tool].forEach(function (m) { m.castShadow = true; });
-    return { root: root, yaw: yaw, sh: sh, el: el };
+    var wr = new T.Mesh(new T.SphereGeometry(0.075, 14, 10), jointMat); wr.position.y = 0.6; el.add(wr);
+    var tool = new T.Mesh(new T.CylinderGeometry(0.05, 0.07, 0.1, 14), jointMat); tool.position.y = 0.68; el.add(tool);
+    var cargo = new T.Mesh(new T.BoxGeometry(0.26, 0.2, 0.26), cargoMat); cargo.position.y = 0.83; el.add(cargo);
+    [base, l1, l2, j, wr, tool, cargo].forEach(function (m) { m.castShadow = true; });
+    return { root: root, yaw: yaw, sh: sh, el: el, cargo: cargo };
   }
   var arms = [makeArm(sx(1)), makeArm(sx(2))];
 
@@ -251,11 +257,15 @@
 
     // Robot arms working, then folding away
     for (var a = 0; a < arms.length; a++) {
-      var A = arms[a], ph = t * 1.6 + a * 1.9;
-      A.yaw.rotation.y = -0.9 + Math.sin(ph) * 0.8;
-      A.sh.rotation.z = 0.35 + Math.sin(ph * 2) * 0.22;
-      A.el.rotation.z = 1.2 + Math.cos(ph * 2) * 0.35;
-      var sc2 = Math.max(0.001, lineVis); A.root.scale.set(sc2, sc2, sc2);
+      // Pick-and-place over the belt: dip, grip, lift, swing, place. Folds away before the stations rise.
+      var A = arms[a], u = ((t * 1.6) / (2 * Math.PI) + a * 0.37) % 1;
+      var dip = 0.5 - 0.5 * Math.cos(4 * Math.PI * u); dip = dip * dip * (3 - 2 * dip);
+      var armVis = 1 - sm(0.3, 0.42, p), fold = 1 - armVis;
+      A.yaw.rotation.y = -Math.PI / 2 + 0.3 * Math.sin(2 * Math.PI * u) * armVis;
+      A.sh.rotation.z = mix(mix(0.25, 0.55, dip), 0.0, fold);
+      A.el.rotation.z = mix(mix(1.15, 1.2, dip), 0.25, fold);
+      A.cargo.visible = (u > 0.27 && u < 0.73) && armVis > 0.5;
+      var sc2 = Math.max(0.001, armVis); A.root.scale.set(sc2, sc2, sc2);
     }
 
     // Conveyor flow with a queue in front of the constraint
