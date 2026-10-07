@@ -1,0 +1,566 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, follow"><link rel="canonical" href="https://www.insightonetech.com/demo">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><title>Insight One Workspace</title>
+<meta name="description" content="Insight One manufacturing intelligence workspace, shown with a synthetic sample plant.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: plant-floor control room. A left rail lists the real workflow in order (upload → export);
+   the right pane is the working screen. Dark-first to match insightonetech.com, with a light mode. */
+:root{
+  --bg:#07090B; --panel:#0D1114; --raise:#121820; --rule:#1F272C; --rule-2:#2A353C;
+  --ink:#E9EEF0; --ink-2:#A9B4BB; --ink-3:#7D8991;
+  --accent:#3BB7D6; --accent-2:#7FD3E8; --accent-soft:#0F2A33; --on-accent:#04141A;
+  --over:#F08A4B; --over-soft:#2B1A10; --good:#4CC38A; --good-soft:#0F2A1E; --amber:#F2B35B; --amber-soft:#2A2110;
+  --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --r:10px; color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#F3F6F7; --panel:#FFFFFF; --raise:#F7FAFB; --rule:#DCE3E6; --rule-2:#C9D3D8;
+  --ink:#0B1A21; --ink-2:#3E4E57; --ink-3:#5E6E77;
+  --accent:#0A84A3; --accent-2:#066C86; --accent-soft:#E2F3F8; --on-accent:#FFFFFF;
+  --over:#C2571A; --over-soft:#FBEDE4; --good:#1E8A57; --good-soft:#E3F4EB; --amber:#9A6A06; --amber-soft:#FBF2DD; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#F3F6F7; --panel:#FFFFFF; --raise:#F7FAFB; --rule:#DCE3E6; --rule-2:#C9D3D8;
+  --ink:#0B1A21; --ink-2:#3E4E57; --ink-3:#5E6E77;
+  --accent:#0A84A3; --accent-2:#066C86; --accent-soft:#E2F3F8; --on-accent:#FFFFFF;
+  --over:#C2571A; --over-soft:#FBEDE4; --good:#1E8A57; --good-soft:#E3F4EB; --amber:#9A6A06; --amber-soft:#FBF2DD; color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font:15px/1.55 var(--f-body);margin:0}
+h1,h2,h3{font-family:var(--f-display);font-stretch:112%;letter-spacing:-.01em;line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.35rem,2.6vw,1.75rem);font-weight:750}
+h2{font-size:1.05rem;font-weight:700}
+h3{font-size:.95rem;font-weight:650}
+p{margin:0}
+.lbl{font:500 .7rem/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-2)} .small{font-size:.85rem}
+a{color:var(--accent)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 20px;background:color-mix(in oklab,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:750;font-stretch:112%;letter-spacing:.01em}
+.brand i{width:22px;height:22px;border-radius:6px;background:conic-gradient(from 210deg,var(--accent),var(--accent-2),var(--accent));display:block}
+.org{display:flex;align-items:center;gap:8px;padding:5px 10px;border:1px solid var(--rule-2);border-radius:999px;font-size:.85rem}
+.org b{font-weight:600}
+.syn{font:600 .68rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--amber);background:var(--amber-soft);padding:5px 8px;border-radius:999px}
+.top .sp{flex:1}
+.notes-t{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--ink-2);cursor:pointer}
+.notes-t input{accent-color:var(--accent)}
+
+/* shell */
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);align-items:start;gap:0;min-height:calc(100vh - 58px)}
+.rail{border-right:1px solid var(--rule);padding:18px 12px;position:sticky;top:58px;align-self:start;height:calc(100vh - 58px);overflow:auto}
+.rail ol{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:2px;counter-reset:s}
+.rail li a{display:grid;grid-template-columns:26px 1fr;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;text-decoration:none;color:var(--ink-2);font-size:.92rem}
+.rail li a::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1px solid var(--rule-2);font:600 .72rem var(--f-mono);color:var(--ink-3)}
+.rail li a:hover{background:var(--raise);color:var(--ink)}
+.rail li a[aria-current="page"]{background:var(--accent-soft);color:var(--ink)}
+.rail li a[aria-current="page"]::before{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.rail li a.done::before{content:"✓";color:var(--good);border-color:var(--good)}
+.rail .home a::before{content:"⌂"}
+.rail .foot{margin-top:18px;padding:12px 10px;border-top:1px solid var(--rule);font-size:.8rem;color:var(--ink-3);display:grid;gap:6px}
+main{padding:22px clamp(16px,3vw,32px) 60px;min-width:0}
+.screen{display:grid;gap:18px;max-width:1180px}
+.screen[hidden]{display:none!important}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.head p{max-width:64ch;color:var(--ink-2);margin-top:6px}
+.btn{appearance:none;border:1px solid var(--rule-2);background:var(--panel);padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:550;font-size:.9rem;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r);padding:18px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.grid-dash{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px}
+@media (max-width:980px){.grid-dash,.grid3{grid-template-columns:1fr}}
+@media (max-width:760px){.shell{grid-template-columns:1fr;min-height:0}.rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule);padding:10px 12px}
+  .rail ol{grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto;padding-bottom:4px}.rail .foot,.rail .lbl{display:none}.grid2{grid-template-columns:1fr}.top .sp{display:none}}
+
+/* build notes (internal only — stripped from the public demo) */
+.note{display:none;border:1px dashed var(--rule-2);border-radius:8px;padding:12px 14px;font-size:.84rem;color:var(--ink-2);background:var(--raise)}
+.note b{color:var(--ink);font-weight:600}
+.note code{font:500 .8rem var(--f-mono);color:var(--accent-2)}
+
+
+/* home */
+.ds{width:100%;border-collapse:collapse;font-size:.9rem}
+.ds th{text-align:left;font:500 .7rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding:8px 10px;border-bottom:1px solid var(--rule)}
+.ds td{padding:11px 10px;border-bottom:1px solid var(--rule);vertical-align:middle}
+.ds tr:last-child td{border-bottom:0}
+.tbl-wrap{overflow-x:auto}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font:600 .72rem/1.4 var(--f-mono);letter-spacing:.04em;white-space:nowrap}
+.chip.hi{background:var(--good-soft);color:var(--good)} .chip.md{background:var(--amber-soft);color:var(--amber)}
+.chip.lo,.chip.need{background:var(--over-soft);color:var(--over)} .chip.info{background:var(--accent-soft);color:var(--accent-2)}
+.chip.ghost{border:1px solid var(--rule-2);color:var(--ink-3)}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip.ghost::before{display:none}
+
+/* upload */
+.path{display:grid;gap:10px;align-content:start}
+.path .steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:500 .78rem var(--f-mono);color:var(--ink-2)}
+.path .steps span{padding:4px 8px;border:1px solid var(--rule-2);border-radius:6px}
+.drop{border:1.5px dashed var(--rule-2);border-radius:var(--r);padding:26px;display:grid;place-items:center;text-align:center;gap:8px;background:var(--raise)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.file{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--rule);border-radius:8px;background:var(--raise);flex-wrap:wrap}
+.file .ic{width:34px;height:40px;border-radius:5px;background:var(--accent-soft);color:var(--accent-2);display:grid;place-items:center;font:600 .62rem var(--f-mono)}
+.prev{font:400 .8rem var(--f-mono)} .prev th{font-weight:600;color:var(--ink)} .prev td,.prev th{padding:6px 10px;white-space:nowrap;border-bottom:1px solid var(--rule)}
+
+/* map */
+.map td select{background:var(--raise);border:1px solid var(--rule-2);border-radius:6px;padding:6px 8px;min-width:170px}
+.map .src{font:500 .85rem var(--f-mono)}
+.map .eg{font:400 .78rem var(--f-mono);color:var(--ink-3)}
+.unit{font:500 .78rem var(--f-mono);color:var(--ink-2)}
+.miss{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:8px;background:var(--amber-soft);flex-wrap:wrap}
+.miss b{color:var(--amber)}
+.alias{display:flex;flex-wrap:wrap;gap:6px}
+.alias span{font:500 .76rem var(--f-mono);padding:4px 8px;border-radius:6px;border:1px solid var(--rule-2);color:var(--ink-2)}
+.alias span.to{border-color:var(--accent);color:var(--accent-2)}
+
+/* validate */
+.dq{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
+@media (max-width:560px){.dq{grid-template-columns:1fr}}
+.gauge{position:relative;width:156px;height:156px}
+.gauge svg{display:block}
+.gauge .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.gauge .v b{font:700 2.4rem/1 var(--f-display);font-stretch:112%}
+.dims{display:grid;gap:8px}
+.dim{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center;font-size:.88rem}
+.bar{height:8px;border-radius:4px;background:var(--rule);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--good)}
+.bar i.md{background:var(--amber)}
+.iss{display:grid;gap:10px}
+.is{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:12px 14px;border:1px solid var(--rule);border-radius:8px}
+.is p{font-size:.88rem;color:var(--ink-2)}
+
+/* dashboard */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.kpi{background:var(--panel);padding:14px 16px;display:grid;gap:6px;align-content:start}
+.kpi b{font:700 1.55rem/1 var(--f-display);font-stretch:108%;font-variant-numeric:tabular-nums}
+.kpi b small{font:500 .8rem var(--f-mono);color:var(--ink-3);margin-left:3px}
+.kpi span.s{font-size:.8rem;color:var(--ink-3)}
+.constraint{border-color:color-mix(in oklab,var(--over) 55%,var(--rule));background:linear-gradient(180deg,var(--over-soft),var(--panel) 55%)}
+.constraint .big{font:750 1.5rem/1.1 var(--f-display);font-stretch:112%}
+.constraint ul{margin:6px 0 0;padding-left:18px;display:grid;gap:6px;font-size:.9rem}
+.risk{display:inline-flex;gap:8px;align-items:center;font:600 .74rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--over);border:1px solid var(--over);padding:4px 9px;border-radius:999px}
+.risk::before{content:"▲";font-size:.6rem}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart text{font:500 11px var(--f-mono);fill:var(--ink-3)}
+.chart .ax{stroke:var(--rule-2)} .chart .gd{stroke:var(--rule);stroke-dasharray:2 4}
+.chart .lbl-in{fill:var(--ink);font-weight:600}
+.chart .m{fill:var(--accent)} .chart .m.over{fill:var(--over)}
+.chart .hit{fill:transparent;cursor:crosshair}
+.chart .hit:hover+.m,.chart .hit:focus+.m{filter:brightness(1.2)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend i.ln{height:2px;border-radius:0}
+.legend i.dash{height:0;border-top:2px dashed var(--ink-2);width:16px;border-radius:0}
+.seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg button{appearance:none;border:0;background:transparent;padding:7px 12px;cursor:pointer;font-size:.85rem;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);padding:8px 10px;border-radius:6px;font:500 .78rem/1.4 var(--f-mono);max-width:260px;opacity:0;transition:opacity .12s}
+.tip.on{opacity:1}
+
+/* forecast & what-if */
+.sc{display:grid;gap:8px}
+.sc button{appearance:none;text-align:left;border:1px solid var(--rule);background:var(--panel);border-radius:8px;padding:12px 14px;cursor:pointer;display:grid;gap:3px}
+.sc button:hover{border-color:var(--rule-2)}
+.sc button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.sc button small{color:var(--ink-3);font-size:.8rem}
+.outc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.outc div{border:1px solid var(--rule);border-radius:8px;padding:12px;display:grid;gap:4px}
+.outc b{font:700 1.4rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.delta{font:500 .78rem var(--f-mono)} .delta.up{color:var(--over)} .delta.dn{color:var(--good)}
+.side{padding:12px 14px;border-radius:8px;background:var(--over-soft);font-size:.88rem}
+.side b{color:var(--over)}
+
+/* export */
+.ex{display:grid;gap:10px}
+.exo{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px;border:1px solid var(--rule);border-radius:8px}
+.exo .ic{width:40px;height:46px;border-radius:6px;display:grid;place-items:center;font:700 .66rem var(--f-mono);background:var(--accent-soft);color:var(--accent-2)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.88rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;max-width:calc(100% - 32px)}
+.toast.on{opacity:1}
+.cta{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;border:1px solid var(--accent);background:var(--accent-soft);border-radius:var(--r);padding:16px 18px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+</head><body>
+<header class="top">
+  <div class="brand"><i aria-hidden="true"></i>Insight One</div>
+  <div class="org"><span class="lbl">Workspace</span><b>Sample Plant</b></div>
+  <span class="syn">Synthetic data</span>
+  <span class="sp"></span>
+</header>
+
+<div class="shell">
+  <nav class="rail" aria-label="Workflow">
+    <div class="lbl" style="padding:0 10px">Workflow</div>
+    <ol>
+      <li class="home"><a href="#workspace" data-s="workspace">Workspace</a></li>
+      <li><a href="#upload" data-s="upload">Upload data</a></li>
+      <li><a href="#mapping" data-s="mapping">Map columns</a></li>
+      <li><a href="#quality" data-s="quality">Check quality</a></li>
+      <li><a href="#dashboard" data-s="dashboard">Capacity &amp; constraints</a></li>
+      <li><a href="#forecast" data-s="forecast">Forecast</a></li>
+      <li><a href="#whatif" data-s="whatif">What-if</a></li>
+      <li><a href="#export" data-s="export">Export results</a></li>
+    </ol>
+    <div class="foot"><span>All figures are synthetic.</span><span>Your data is visible only inside your company workspace.</span></div>
+  </nav>
+
+  <main id="main">
+  <!-- WORKSPACE -->
+  <section class="screen" id="s-workspace" data-screen="workspace">
+    <div class="head"><div><span class="lbl">Sample Plant · 3 users · 2 datasets</span><h1>Workspace</h1>
+      <p>Everything your team uploads, maps and analyses lives in this workspace. Each upload is kept as its own version, so every number traces back to a file and a row.</p></div>
+      <a class="btn pri" href="#upload">Upload production data</a></div>
+    <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h2>Datasets</h2><span class="small muted">Newest first</span></div>
+      <div class="tbl-wrap"><table class="ds">
+        <thead><tr><th>Dataset</th><th>Source</th><th>Rows</th><th>Data quality</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><b>Production · Jul–Sep 2026</b><br><span class="small muted">v2 · uploaded by Plant Manager</span></td><td class="num small">mes_export_q3.csv</td><td class="num">1,548</td><td class="num">92 / 100</td><td><span class="chip hi">Analysed</span></td></tr>
+          <tr><td><b>Production · Jun 2026</b><br><span class="small muted">v1 · Insight One template</span></td><td class="num small">insight-one-template.xlsx</td><td class="num">512</td><td class="num">97 / 100</td><td><span class="chip ghost">Archived</span></td></tr>
+        </tbody></table></div></div>
+    <div class="grid3">
+      <div class="panel"><span class="lbl">Saved mapping</span><h3 style="margin:6px 0 4px">MES export · 11 columns</h3><p class="small muted">Applied automatically the next time a file with the same columns arrives.</p></div>
+      <div class="panel"><span class="lbl">Shift calendar</span><h3 style="margin:6px 0 4px">Day 8 h · Evening 7.5 h</h3><p class="small muted">Used when a file does not include available hours.</p></div>
+      <div class="panel"><span class="lbl">People</span><h3 style="margin:6px 0 4px">1 admin · 2 analysts</h3><p class="small muted">Roles: Admin, Analyst, Viewer.</p></div>
+    </div>
+  </section>
+
+  <!-- UPLOAD -->
+  <section class="screen" id="s-upload" data-screen="upload" hidden>
+    <div class="head"><div><span class="lbl">Step 1</span><h1>Upload production data</h1>
+      <p>Use the Insight One template, or upload the file you already have. You do not need to change your systems or rename columns.</p></div></div>
+    <div class="grid2">
+      <div class="panel path"><span class="chip info" style="justify-self:start">Simple</span><h2>Fill in the template</h2>
+        <p class="small muted">Fifteen standard fields, five of them required. Columns match automatically, so there is nothing to map.</p>
+        <div class="steps"><span>Download</span>→<span>Fill in</span>→<span>Upload</span></div>
+        <a class="btn" href="https://www.insightonetech.com/data-template" target="_blank" rel="noopener">Get the template</a></div>
+      <div class="panel path"><span class="chip info" style="justify-self:start">Smart</span><h2>Upload your own file</h2>
+        <p class="small muted">An ERP, MES or timesheet export, or a spreadsheet. Insight One suggests how each column maps, and you confirm.</p>
+        <div class="steps"><span>Upload</span>→<span>Confirm mapping</span>→<span>Analyse</span></div></div>
+    </div>
+    <div class="drop" id="drop"><b>Drop a CSV or XLSX here</b><span class="small muted">Up to 50 MB. Macros are never run.</span>
+      <label class="btn" for="file">Choose a file<input id="file" type="file" accept=".csv,.xlsx" hidden></label>
+      <span class="small muted" id="fileMsg">This preview does not keep files. The sample below shows what happens next.</span></div>
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="file"><span class="ic">CSV</span><div style="flex:1;min-width:0"><b>mes_export_q3.csv</b><div class="small muted">1,548 rows · 11 columns · header found on row 1</div></div><span class="chip hi">Ready to map</span></div>
+      <div class="tbl-wrap"><table class="prev" id="prev"></table></div>
+      <div class="row" style="justify-content:flex-end"><a class="btn pri" href="#mapping">Continue to mapping</a></div>
+    </div>
+  </section>
+
+  <!-- MAPPING -->
+  <section class="screen" id="s-mapping" data-screen="mapping" hidden>
+    <div class="head"><div><span class="lbl">Step 2 · mes_export_q3.csv</span><h1>Map your columns</h1>
+      <p>Each of your columns is matched to a standard Insight One field. Confident matches are pre-filled. Check the rest, then confirm.</p></div>
+      <div class="row"><span class="chip hi">High: <span id="nHi">0</span></span><span class="chip md">Check: <span id="nMd">0</span></span></div></div>
+    <div class="panel"><div class="tbl-wrap"><table class="ds map" id="map">
+      <thead><tr><th>Your column</th><th>Example</th><th>Insight One field</th><th>Match</th><th>Unit</th></tr></thead><tbody></tbody></table></div></div>
+    <div class="miss"><b>Not in this file (optional):</b><span class="small">Setup_Time, Labor_Hours, Operators, Due_Date. Analysis still runs. Labor hours and due dates unlock staffing and late-job views later.</span></div>
+    <div class="panel" style="display:grid;gap:10px"><h3>Other plants name the same things differently</h3>
+      <p class="small muted">These all become the same field, so one analysis works for every plant.</p>
+      <div class="alias"><span>Machine</span><span>Station</span><span>Resource</span><span>Work Center</span><span class="to">→ Work_Center</span></div>
+      <div class="alias"><span>Runtime (hrs)</span><span>Production Minutes</span><span>Worked Hours (h:mm)</span><span class="to">→ Run_Time (hours)</span></div>
+      <div class="alias"><span>Delay</span><span>Downtime Minutes</span><span>Lost Time</span><span class="to">→ Downtime (hours)</span></div>
+    </div>
+    <div class="row" style="justify-content:space-between"><label class="notes-t"><input type="checkbox" checked id="saveMap"> Save this mapping for future uploads</label><a class="btn pri" href="#quality" id="confirmMap">Confirm mapping</a></div>
+  </section>
+
+  <!-- QUALITY -->
+  <section class="screen" id="s-quality" data-screen="quality" hidden>
+    <div class="head"><div><span class="lbl">Step 3</span><h1>Check data quality</h1>
+      <p>Before any analysis, every row is checked. Rows with errors are set aside. Rows with warnings are kept and flagged, so you can see exactly what the results rest on.</p></div></div>
+    <div class="panel dq">
+      <div class="gauge" role="img" aria-label="Data Quality Score 92 out of 100">
+        <svg viewBox="0 0 156 156" width="156" height="156" aria-hidden="true"><circle cx="78" cy="78" r="66" fill="none" stroke="var(--rule)" stroke-width="12"/>
+          <circle cx="78" cy="78" r="66" fill="none" stroke="var(--good)" stroke-width="12" stroke-linecap="round" stroke-dasharray="381 415" transform="rotate(-90 78 78)"/></svg>
+        <div class="v"><div><b>92</b><div class="lbl">of 100</div></div></div></div>
+      <div style="display:grid;gap:12px;min-width:0"><div><h2>Data Quality Score: Good</h2><p class="small muted">Good enough to analyse now. Fixing the warnings below makes the downtime analysis sharper.</p></div>
+        <div class="dims" id="dims"></div></div>
+    </div>
+    <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h2>What was found</h2><span class="small muted num">1,548 rows · 0 errors · 13 warnings</span></div>
+      <div class="iss">
+        <div class="is"><span class="chip md">Warning</span><div><b>Downtime with no reason: 13 rows</b><p>Rows are kept. Their downtime is counted, but cannot be grouped by cause.</p></div><span class="num small muted">13</span></div>
+        <div class="is"><span class="chip info">Note</span><div><b>Setup time not provided</b><p>Utilization is based on run time. Add setup time to see changeover losses separately.</p></div><span class="num small muted">—</span></div>
+        <div class="is"><span class="chip info">Note</span><div><b>13 weeks of history</b><p>Enough for capacity analysis and a first forecast. 26 weeks or more makes the forecast range tighter.</p></div><span class="num small muted">13 wk</span></div>
+        <div class="is"><span class="chip hi">Passed</span><div><b>No duplicates, negatives or impossible hours</b><p>Every work center logs 24 hours or less per day, and run time plus downtime stays within available time.</p></div><span class="num small muted">✓</span></div>
+      </div></div>
+    <div class="row" style="justify-content:flex-end"><a class="btn pri" href="#dashboard">See capacity &amp; constraints</a></div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="screen" id="s-dashboard" data-screen="dashboard" hidden>
+    <div class="head"><div><span class="lbl" id="period"></span><h1>Capacity &amp; constraints</h1></div>
+      <div class="seg" role="group" aria-label="Group by"><button aria-pressed="true" data-g="wc">Work center</button><button aria-pressed="false" data-g="shift">Shift</button></div></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="grid-dash">
+      <div class="panel" style="display:grid;gap:12px;align-content:start">
+        <div class="row" style="justify-content:space-between"><h2 id="cmpTitle">Utilization by work center</h2>
+          <div class="legend"><span><i style="background:var(--accent)"></i>Used</span><span><i style="background:var(--over)"></i>Primary constraint</span><span><i class="dash"></i>100% of available</span></div></div>
+        <svg class="chart" id="cmp" role="img" aria-label="Utilization by work center"></svg>
+      </div>
+      <div class="panel constraint" style="display:grid;gap:12px;align-content:start" id="bn"></div>
+    </div>
+    <div class="grid2">
+      <div class="panel" style="display:grid;gap:12px"><div class="row" style="justify-content:space-between"><h2>Downtime by cause</h2><span class="small muted">hours, all work centers</span></div>
+        <svg class="chart" id="pareto" role="img" aria-label="Downtime hours by cause"></svg></div>
+      <div class="panel" style="display:grid;gap:12px"><div class="row" style="justify-content:space-between"><h2>Downtime trend</h2>
+        <div class="legend"><span><i class="ln" style="background:var(--over)"></i>Welding Cell 2</span><span><i class="ln" style="background:var(--ink-3)"></i>Plant average</span></div></div>
+        <svg class="chart" id="trend" role="img" aria-label="Weekly downtime percent, Welding Cell 2 versus plant average"></svg></div>
+    </div>
+  </section>
+
+  <!-- FORECAST -->
+  <section class="screen" id="s-forecast" data-screen="forecast" hidden>
+    <div class="head"><div><span class="lbl">Next 8 weeks · from open orders and recent pace</span><h1>Forecast load vs capacity</h1>
+      <p>Bars show the expected load. The thin range shows where the load is likely to land. Weeks above the dashed line need more capacity, less work or a decision.</p></div>
+      <label class="small muted" for="fcWc">Work center<br><select id="fcWc" class="btn" style="margin-top:4px"></select></label></div>
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="row" style="justify-content:space-between"><h2 id="fcTitle"></h2>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Expected load</span><span><i style="background:var(--over)"></i>Over capacity</span><span><i class="dash"></i>Available hours</span></div></div>
+      <svg class="chart" id="fc" role="img"></svg>
+      <p class="small" id="fcSum"></p>
+    </div>
+  </section>
+
+  <!-- WHAT-IF -->
+  <section class="screen" id="s-whatif" data-screen="whatif" hidden>
+    <div class="head"><div><span class="lbl">Welding Cell 2 · next 8 weeks</span><h1>What if…?</h1>
+      <p>Test a change before you make it. Each option re-runs the 8-week plan for the constrained cell.</p></div></div>
+    <div class="grid-dash">
+      <div class="panel" style="display:grid;gap:14px">
+        <div class="outc" id="outc"></div>
+        <svg class="chart" id="wf" role="img"></svg>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Load</span><span><i style="background:var(--over)"></i>Over capacity</span><span><i class="dash"></i>Capacity in this scenario</span></div>
+        <div id="sideNote"></div>
+      </div>
+      <div class="sc" id="sc" role="group" aria-label="Scenarios"></div>
+    </div>
+  </section>
+
+  <!-- EXPORT -->
+  <section class="screen" id="s-export" data-screen="export" hidden>
+    <div class="head"><div><span class="lbl">Step 7</span><h1>Export results</h1>
+      <p>Take the results into a meeting, Power BI or your own reports. Exports contain your numbers and findings. They do not contain Insight One's calculation logic.</p></div></div>
+    <div class="ex">
+      <div class="exo"><span class="ic">PDF</span><div><b>Management summary</b><div class="small muted">Constraint, risk, actions and the 8-week outlook on two pages.</div></div><button class="btn" data-x="Management summary">Export</button></div>
+      <div class="exo"><span class="ic">XLSX</span><div><b>Results workbook</b><div class="small muted">Utilization, downtime and forecast tables. Values only, no formulas.</div></div><button class="btn" data-x="Results workbook">Export</button></div>
+      <div class="exo"><span class="ic">CSV</span><div><b>Standardized data</b><div class="small muted">Your rows in the Insight One standard layout, with source row numbers.</div></div><button class="btn" data-x="Standardized data">Export</button></div>
+    </div>
+    <div class="cta" data-public><div><h2>See this on your own data</h2><p class="small muted" style="margin-top:4px">A Manufacturing Data Assessment runs your existing exports through this workflow and walks your team through the results.</p></div>
+      <a class="btn pri" href="https://www.insightonetech.com/contact" target="_blank" rel="noopener">Request a Manufacturing Data Assessment</a></div>
+  </section>
+  </main>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const R = {"plant":"Sample Plant (synthetic)","period":"6 Jul – 2 Oct 2026 · 13 weeks","rows":1548,"totals":{"available":7088,"used":5416,"downtime_h":457,"kg":1169300,"jobs":867,"remaining":1215,"util":76.4,"downtime":6.4,"kg_week":89946},"workcenters":[{"name":"Saw Cutting","dept":"Cutting","available":520,"used":330,"remaining":171,"util":63.5,"downtime":3.7,"kg":128786,"jobs":76},{"name":"Plasma Table","dept":"Cutting","available":1008,"used":731,"remaining":225,"util":72.6,"downtime":5.1,"kg":362360,"jobs":141},{"name":"CNC Machining","dept":"Machining","available":1008,"used":784,"remaining":165,"util":77.8,"downtime":5.9,"kg":68617,"jobs":144},{"name":"Press Brake","dept":"Forming","available":1008,"used":733,"remaining":224,"util":72.8,"downtime":5.0,"kg":176677,"jobs":144},{"name":"Welding Cell 1","dept":"Welding","available":1008,"used":832,"remaining":115,"util":82.6,"downtime":6.0,"kg":95022,"jobs":161},{"name":"Welding Cell 2","dept":"Welding","available":1008,"used":853,"remaining":6,"util":84.6,"downtime":14.8,"kg":95427,"jobs":172},{"name":"Assembly","dept":"Assembly","available":1008,"used":798,"remaining":179,"util":79.2,"downtime":3.1,"kg":139140,"jobs":155},{"name":"Paint & Finish","dept":"Finishing","available":520,"used":355,"remaining":128,"util":68.4,"downtime":7.0,"kg":103271,"jobs":85}],"weekly":{"Saw Cutting":[{"u":58.1,"d":3.7},{"u":63.1,"d":5.2},{"u":67.5,"d":2.7},{"u":62.4,"d":4.3},{"u":66.9,"d":3.0},{"u":62.4,"d":3.8},{"u":62.9,"d":2.8},{"u":64.4,"d":4.1},{"u":62.8,"d":4.0},{"u":66.6,"d":3.1},{"u":62.6,"d":4.2},{"u":63.8,"d":2.8},{"u":61.8,"d":4.0}],"Plasma Table":[{"u":69.3,"d":6.3},{"u":71.8,"d":6.3},{"u":75.2,"d":3.7},{"u":73.4,"d":4.2},{"u":74.3,"d":5.1},{"u":74.1,"d":5.2},{"u":70.5,"d":3.5},{"u":74.1,"d":4.5},{"u":68.7,"d":5.5},{"u":71.8,"d":3.3},{"u":71.1,"d":6.4},{"u":72.8,"d":5.6},{"u":76.4,"d":7.1}],"CNC Machining":[{"u":75.4,"d":5.2},{"u":74.8,"d":5.8},{"u":75.6,"d":6.5},{"u":80.7,"d":4.4},{"u":77.5,"d":6.9},{"u":77.7,"d":4.7},{"u":78.0,"d":6.0},{"u":78.8,"d":5.2},{"u":82.2,"d":6.1},{"u":78.9,"d":7.3},{"u":77.3,"d":5.6},{"u":75.4,"d":6.0},{"u":78.9,"d":6.6}],"Press Brake":[{"u":70.1,"d":5.1},{"u":72.9,"d":5.0},{"u":73.1,"d":5.1},{"u":75.7,"d":4.7},{"u":72.1,"d":4.4},{"u":68.5,"d":4.3},{"u":75.6,"d":5.0},{"u":75.8,"d":5.4},{"u":74.4,"d":5.3},{"u":71.8,"d":4.5},{"u":70.3,"d":4.2},{"u":73.5,"d":5.8},{"u":72.5,"d":5.9}],"Welding Cell 1":[{"u":85.2,"d":7.2},{"u":84.6,"d":5.2},{"u":81.3,"d":6.2},{"u":83.8,"d":5.5},{"u":82.8,"d":6.7},{"u":83.2,"d":7.4},{"u":81.0,"d":5.2},{"u":82.3,"d":4.6},{"u":80.5,"d":6.5},{"u":83.0,"d":5.1},{"u":85.5,"d":6.9},{"u":77.8,"d":6.0},{"u":82.2,"d":5.3}],"Welding Cell 2":[{"u":89.7,"d":7.5},{"u":89.3,"d":9.7},{"u":87.8,"d":11.6},{"u":85.9,"d":13.1},{"u":83.6,"d":15.6},{"u":84.9,"d":14.4},{"u":84.4,"d":15.3},{"u":86.7,"d":12.9},{"u":81.8,"d":18.1},{"u":81.8,"d":18.1},{"u":81.4,"d":18.0},{"u":81.1,"d":18.9},{"u":81.3,"d":18.6}],"Assembly":[{"u":79.8,"d":3.3},{"u":78.8,"d":2.8},{"u":79.3,"d":3.3},{"u":79.5,"d":3.0},{"u":74.9,"d":3.6},{"u":76.9,"d":2.7},{"u":78.5,"d":2.9},{"u":79.3,"d":3.1},{"u":84.7,"d":2.8},{"u":77.6,"d":3.2},{"u":82.1,"d":3.2},{"u":77.3,"d":3.3},{"u":80.5,"d":3.3}],"Paint & Finish":[{"u":65.3,"d":8.8},{"u":72.5,"d":5.8},{"u":70.4,"d":7.5},{"u":66.5,"d":7.4},{"u":71.4,"d":8.2},{"u":72.4,"d":5.1},{"u":72.8,"d":8.4},{"u":69.3,"d":8.2},{"u":63.4,"d":7.3},{"u":63.9,"d":4.6},{"u":64.8,"d":7.0},{"u":64.1,"d":5.8},{"u":71.8,"d":7.0}]},"shifts":[{"name":"Day","util":74.7,"downtime":6.4,"hours":4161},{"name":"Evening","util":78.8,"downtime":6.6,"hours":2925}],"pareto":[{"reason":"Material wait","h":118.8},{"reason":"Gas supply","h":56.7},{"reason":"Waiting on fit-up","h":49.8},{"reason":"Wire feeder fault","h":48.1},{"reason":"Consumables change","h":25.3},{"reason":"Tool breakage","h":20.7},{"reason":"Machine fault","h":20.5}],"bottleneck":{"name":"Welding Cell 2","risk":"High","util":84.6,"downtime":14.8,"rank":["Welding Cell 2","Welding Cell 1","CNC Machining","Assembly"],"why":"Welding Cell 2 runs at 84.6% of available time, and its downtime has climbed over the last four weeks. It has the least room to absorb new work.","actions":["Add temporary evening capacity on Welding Cell 2. It is the only single change that clears every overloaded week","Investigate the rise in wire feeder faults and fit-up waits. Downtime there is more than double the plant average","Rebalance only a small share of welds. Moving 10% to Welding Cell 1 overloads that cell too","Hold new due-date commitments for welded work until weeks 41–48 are covered"]},"forecast":{"weeks":["W41","W42","W43","W44","W45","W46","W47","W48"],"wc":{"Saw Cutting":{"cap":40,"p50":[26,27,28,29,27,27,28,28],"lo":[24,25,26,27,25,25,26,26],"hi":[28,29,31,32,30,29,31,30]},"Plasma Table":{"cap":78,"p50":[58,60,63,68,62,59,61,61],"lo":[54,56,59,63,58,54,57,57],"hi":[63,65,69,74,68,64,67,66]},"CNC Machining":{"cap":78,"p50":[64,67,66,71,67,61,67,63],"lo":[60,63,62,66,62,57,62,59],"hi":[70,73,72,77,73,67,73,69]},"Press Brake":{"cap":78,"p50":[58,61,61,66,63,58,64,62],"lo":[54,57,56,62,59,54,59,58],"hi":[63,67,66,72,69,63,69,68]},"Welding Cell 1":{"cap":78,"p50":[71,73,76,81,75,70,75,74],"lo":[66,68,71,75,70,66,70,69],"hi":[77,80,83,88,82,77,82,81]},"Welding Cell 2":{"cap":78,"p50":[80,81,84,89,81,79,87,81],"lo":[74,75,78,83,76,74,81,75],"hi":[87,88,92,97,89,87,95,88]},"Assembly":{"cap":78,"p50":[63,67,70,68,66,63,70,67],"lo":[58,62,65,63,61,59,65,62],"hi":[69,73,76,74,72,69,76,73]},"Paint & Finish":{"cap":40,"p50":[27,29,30,32,29,29,30,30],"lo":[25,27,28,30,27,27,28,28],"hi":[30,32,33,35,31,31,33,33]}}},"scenarios":[{"id":"base","label":"Current plan","note":"No changes.","weeks_over":8,"peak":114,"overload_h":38,"cap":78,"load":[80,81,84,89,81,79,87,81]},{"id":"op","label":"+1 operator on Welding Cell 2 (evening)","note":"Adds about 38 h of staffed time per week.","weeks_over":0,"peak":77,"overload_h":0,"cap":116,"load":[80,81,84,89,81,79,87,81]},{"id":"dt","label":"Cut Welding Cell 2 downtime by 25%","note":"Recovers time currently lost to feeder faults and fit-up waits.","weeks_over":3,"peak":110,"overload_h":17,"cap":81,"load":[80,81,84,89,81,79,87,81]},{"id":"ot","label":"Saturday overtime, 8 h","note":"One extra 8-hour shift per week.","weeks_over":2,"peak":103,"overload_h":4,"cap":86,"load":[80,81,84,89,81,79,87,81]},{"id":"mv","label":"Move 10% of welds to Welding Cell 1","note":"Shifts suitable work to the other welding cell.","weeks_over":1,"peak":103,"overload_h":2,"cap":78,"load":[72,73,76,80,73,71,78,73],"side":{"wc":"Welding Cell 1","peak":115,"weeks_over":7}}]};
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const fmt = n => n.toLocaleString('en-CA');
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs = {}, parent) { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function txt(parent, x, y, s, attrs = {}) { const t = el('text', Object.assign({ x, y }, attrs), parent); t.textContent = s; return t; }
+function clear(svg) { while (svg.firstChild) svg.firstChild.remove(); }
+
+/* tooltip */
+const tip = $('#tip');
+function bindTip(node, html) {
+  node.setAttribute('tabindex', '0');
+  const show = e => { tip.innerHTML = html; tip.classList.add('on'); place(e); };
+  const place = e => { const r = node.getBoundingClientRect(); const x = e && e.clientX != null ? e.clientX : r.left + r.width / 2; const y = e && e.clientY != null ? e.clientY : r.top;
+    tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, Math.max(8, x + 12)) + 'px'; tip.style.top = Math.max(8, y - tip.offsetHeight - 10) + 'px'; };
+  node.addEventListener('pointerenter', show); node.addEventListener('pointermove', place);
+  node.addEventListener('pointerleave', () => tip.classList.remove('on'));
+  node.addEventListener('focus', () => show(null)); node.addEventListener('blur', () => tip.classList.remove('on'));
+}
+
+/* navigation */
+const order = ['workspace', 'upload', 'mapping', 'quality', 'dashboard', 'forecast', 'whatif', 'export'];
+function go(id) {
+  if (!order.includes(id)) id = 'workspace';
+  $$('.screen').forEach(s => s.hidden = s.dataset.screen !== id);
+  const i = order.indexOf(id);
+  $$('.rail a').forEach(a => { const j = order.indexOf(a.dataset.s); a.toggleAttribute('aria-current', j === i); if (j === i) a.setAttribute('aria-current', 'page'); a.classList.toggle('done', j > 0 && j < i); });
+  if (id === 'dashboard') drawDash(); if (id === 'forecast') drawFc(); if (id === 'whatif') drawWf();
+  tip.classList.remove('on');
+}
+addEventListener('hashchange', () => { go(location.hash.slice(1)); $('#main').scrollIntoView({ block: 'start' }); });
+const notes = $('#notes');
+if (notes) { try { notes.checked = localStorage.getItem('io-notes') === '1'; } catch (e) {} document.body.classList.toggle('show-notes', notes.checked);
+  notes.addEventListener('change', () => { document.body.classList.toggle('show-notes', notes.checked); try { localStorage.setItem('io-notes', notes.checked ? '1' : '0'); } catch (e) {} }); }
+
+/* upload preview */
+const PREV = [['Prod Date','Machine','Area','Shift','Work Order','Runtime (hrs)','Sched Hrs','Delay (hrs)','Delay Cause','Pcs','Wt (kg)'],
+  ['2026-09-14','Welding Cell 2','Welding','Day','WO10482','2.61','2.67','0.42','Wire feeder fault','6','301'],
+  ['2026-09-14','Welding Cell 2','Welding','Day','WO10483','2.48','2.67','0.42','Wire feeder fault','5','276'],
+  ['2026-09-14','Press Brake','Forming','Evening','WO10479','3.12','3.75','0.18','Tooling change','9','812'],
+  ['2026-09-14','Plasma Table','Cutting','Day','WO10486','2.95','4.00','0.21','Consumables change','11','1547']];
+$('#prev').innerHTML = '<thead><tr>' + PREV[0].map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>' + PREV.slice(1).map(r => '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>').join('') + '</tbody>';
+const drop = $('#drop'), fileIn = $('#file');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+function picked(f) { if (!f) return; $('#fileMsg').textContent = `${f.name} was not uploaded. In this preview your file stays on your computer. The sample file below continues the walkthrough.`; }
+drop.addEventListener('drop', e => picked(e.dataTransfer.files[0])); fileIn.addEventListener('change', () => picked(fileIn.files[0]));
+
+/* mapping */
+const FIELDS = ['Date','Work_Center','Department','Shift','Job_ID','Run_Time','Available_Time','Downtime','Downtime_Reason','Setup_Time','Qty_Completed','Weight_Completed','Labor_Hours','Operators','Due_Date','— Skip this column —'];
+const MAP = [['Prod Date','2026-09-14','Date','hi','ISO date'],['Machine','Welding Cell 2','Work_Center','hi','—'],['Area','Welding','Department','hi','—'],['Shift','Day','Shift','hi','—'],
+  ['Work Order','WO10482','Job_ID','hi','—'],['Runtime (hrs)','2.61','Run_Time','hi','hours'],['Sched Hrs','2.67','Available_Time','md','hours'],['Delay (hrs)','0.42','Downtime','md','hours'],
+  ['Delay Cause','Wire feeder fault','Downtime_Reason','md','—'],['Pcs','6','Qty_Completed','md','pieces'],['Wt (kg)','301','Weight_Completed','hi','kg']];
+const mt = $('#map tbody');
+mt.innerHTML = MAP.map((m, i) => `<tr><td class="src">${m[0]}</td><td class="eg">${m[1]}</td><td><select id="map-${i}" aria-label="Insight One field for ${m[0]}">${FIELDS.map(f => `<option${f === m[2] ? ' selected' : ''}>${f}</option>`).join('')}</select></td>
+  <td><span class="chip ${m[3]}" id="band-${i}">${m[3] === 'hi' ? 'High' : 'Check'}</span></td><td class="unit">${m[4]}</td></tr>`).join('');
+function countBands() { $('#nHi').textContent = $$('#map .chip.hi').length; $('#nMd').textContent = $$('#map .chip.md').length; }
+$$('#map select').forEach((s, i) => s.addEventListener('change', () => { const b = $('#band-' + i); b.className = 'chip hi'; b.textContent = 'Confirmed'; countBands(); }));
+countBands();
+
+/* quality dims (bands only) */
+$('#dims').innerHTML = [['Completeness','Good',96],['Validity','Good',100],['Consistency','Good',98],['Uniqueness','Good',100],['Coverage','Fair',62]]
+  .map(d => `<div class="dim"><span>${d[0]}</span><span class="bar"><i class="${d[1] === 'Fair' ? 'md' : ''}" style="width:${d[2]}%"></i></span><span class="chip ${d[1] === 'Fair' ? 'md' : 'hi'}">${d[1]}</span></div>`).join('');
+
+/* dashboard */
+$('#period').textContent = R.period + ' · ' + fmt(R.rows) + ' rows';
+const T = R.totals;
+$('#kpis').innerHTML = [
+  ['Available', fmt(T.available), 'h', 'Scheduled hours, all work centers'],
+  ['Used', fmt(T.used), 'h', 'Run time on jobs'],
+  ['Remaining', fmt(T.remaining), 'h', 'Not used and not lost to downtime'],
+  ['Utilization', T.util, '%', 'Used ÷ available'],
+  ['Downtime', T.downtime, '%', fmt(T.downtime_h) + ' h lost'],
+  ['Throughput', fmt(Math.round(T.kg_week / 1000)), 't/wk', fmt(T.jobs) + ' jobs completed']]
+  .map(k => `<div class="kpi"><span class="lbl">${k[0]}</span><b>${k[1]}<small>${k[2]}</small></b><span class="s">${k[3]}</span></div>`).join('');
+const B = R.bottleneck;
+$('#bn').innerHTML = `<div class="row" style="justify-content:space-between"><span class="lbl">Primary constraint</span><span class="risk">Capacity risk: ${B.risk}</span></div>
+  <div class="big">${B.name}</div>
+  <div class="row small"><span class="num">${B.util}% utilized</span><span class="muted">·</span><span class="num">${B.downtime}% downtime</span></div>
+  <p class="small">${B.why}</p>
+  <div><span class="lbl">Options to consider</span><ul>${B.actions.map(a => `<li>${a}.</li>`).join('')}</ul></div>
+  <a class="btn" href="#whatif" style="justify-self:start">Test these options</a>`;
+let group = 'wc';
+$$('.seg [data-g]').forEach(b => b.addEventListener('click', () => { group = b.dataset.g; $$('.seg [data-g]').forEach(x => x.setAttribute('aria-pressed', x === b)); drawDash(); }));
+
+function hbars(svg, items, opt) {
+  clear(svg); const W = 640, rowH = opt.rowH || 30, top = 6, left = opt.left || 128, right = 74, H = top + items.length * rowH + 22;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const max = opt.max, x = v => left + (W - left - right) * v / max;
+  (opt.ticks || []).forEach(t => { el('line', { x1: x(t), x2: x(t), y1: top - 2, y2: H - 18, class: 'gd' }, svg); txt(svg, x(t), H - 4, t + (opt.unit || ''), { 'text-anchor': 'middle' }); });
+  if (opt.ref != null) el('line', { x1: x(opt.ref), x2: x(opt.ref), y1: top - 4, y2: H - 18, stroke: 'var(--ink-2)', 'stroke-dasharray': '4 3', 'stroke-width': 1.5 }, svg);
+  items.forEach((it, i) => {
+    const y = top + i * rowH, h = rowH - 12;
+    txt(svg, left - 10, y + h / 2 + 4, it.label, { 'text-anchor': 'end', class: it.hot ? 'lbl-in' : '' });
+    const hit = el('rect', { x: left, y: y - 4, width: W - left - right + 70, height: rowH - 4, class: 'hit' }, svg);
+    el('rect', { x: left, y, width: Math.max(2, x(it.v) - left), height: h, rx: 4, class: 'm' + (it.hot ? ' over' : '') }, svg);
+    txt(svg, x(it.v) + 8, y + h / 2 + 4, it.vl, { class: 'lbl-in' });
+    bindTip(hit, it.tip);
+  });
+}
+function drawDash() {
+  if (group === 'wc') {
+    $('#cmpTitle').textContent = 'Utilization by work center';
+    const items = [...R.workcenters].sort((a, b) => b.util - a.util).map(w => ({ label: w.name, v: w.util, vl: w.util + '%', hot: w.name === B.name,
+      tip: `<b>${w.name}</b><br>Utilization ${w.util}%<br>Downtime ${w.downtime}%<br>Used ${fmt(w.used)} of ${fmt(w.available)} h<br>${fmt(w.jobs)} jobs`}));
+    hbars($('#cmp'), items, { max: 100, ticks: [0, 25, 50, 75], ref: 100, unit: '%' });
+  } else {
+    $('#cmpTitle').textContent = 'Utilization by shift';
+    hbars($('#cmp'), R.shifts.map(s => ({ label: s.name, v: s.util, vl: s.util + '%', tip: `<b>${s.name} shift</b><br>Utilization ${s.util}%<br>Downtime ${s.downtime}%<br>${fmt(s.hours)} available h` })),
+      { max: 100, ticks: [0, 25, 50, 75], ref: 100, unit: '%', rowH: 44, left: 90 });
+  }
+  const P = R.pareto, pm = Math.ceil(P[0].h / 20) * 20;
+  hbars($('#pareto'), P.map(p => ({ label: p.reason, v: p.h, vl: Math.round(p.h) + ' h', tip: `<b>${p.reason}</b><br>${p.h} h lost` })), { max: pm, ticks: [0, pm / 2], left: 150, rowH: 28 });
+  drawTrend();
+}
+function drawTrend() {
+  const svg = $('#trend'); clear(svg);
+  const W = 640, H = 230, L = 40, Rt = 112, Tp = 12, Bt = 28;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const wcN = Object.keys(R.weekly), n = 13;
+  const plant = Array.from({ length: n }, (_, i) => +(wcN.reduce((a, k) => a + R.weekly[k][i].d, 0) / wcN.length).toFixed(1));
+  const hot = R.weekly[B.name].map(w => w.d);
+  const max = 20, x = i => L + (W - L - Rt) * i / (n - 1), y = v => Tp + (H - Tp - Bt) * (1 - v / max);
+  [0, 5, 10, 15, 20].forEach(t => { el('line', { x1: L, x2: W - Rt, y1: y(t), y2: y(t), class: 'gd' }, svg); txt(svg, L - 8, y(t) + 4, t + '%', { 'text-anchor': 'end' }); });
+  [0, 4, 8, 12].forEach(i => txt(svg, x(i), H - 8, 'W' + (28 + i), { 'text-anchor': 'middle' }));
+  const line = (arr, color, w) => el('path', { d: arr.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' '), fill: 'none', stroke: color, 'stroke-width': w, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+  el('path', { d: hot.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ') + ` L${x(n - 1)} ${y(0)} L${x(0)} ${y(0)} Z`, fill: 'var(--over)', opacity: .1 }, svg);
+  line(plant, 'var(--ink-3)', 2); line(hot, 'var(--over)', 2.5);
+  el('circle', { cx: x(n - 1), cy: y(hot[n - 1]), r: 4.5, fill: 'var(--over)', stroke: 'var(--panel)', 'stroke-width': 2 }, svg);
+  txt(svg, x(n - 1) + 10, y(hot[n - 1]) + 4, B.name.replace('Welding ', 'Weld. ') + ' ' + hot[n - 1] + '%', { class: 'lbl-in' });
+  txt(svg, x(n - 1) + 10, y(plant[n - 1]) + 4, 'Plant ' + plant[n - 1] + '%');
+  const cross = el('line', { y1: Tp, y2: H - Bt, stroke: 'var(--ink-3)', 'stroke-width': 1, opacity: 0 }, svg);
+  for (let i = 0; i < n; i++) {
+    const hit = el('rect', { x: x(i) - (W - L - Rt) / (n - 1) / 2, y: Tp, width: (W - L - Rt) / (n - 1), height: H - Tp - Bt, class: 'hit' }, svg);
+    bindTip(hit, `<b>Week ${28 + i}</b><br>${B.name}: ${hot[i]}%<br>Plant average: ${plant[i]}%`);
+    hit.addEventListener('pointerenter', () => { cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i)); cross.setAttribute('opacity', .6); });
+    hit.addEventListener('pointerleave', () => cross.setAttribute('opacity', 0));
+  }
+}
+
+/* forecast & what-if columns */
+function cols(svg, load, cap, lo, hi, weeks) {
+  clear(svg); const W = 640, H = 270, L = 44, Rt = 64, Tp = 16, Bt = 30;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const top = Math.max(...(hi || load), cap) * 1.12, max = Math.ceil(top / 20) * 20;
+  const y = v => Tp + (H - Tp - Bt) * (1 - v / max), slot = (W - L - Rt) / load.length, bw = Math.min(46, slot * .56);
+  for (let t = 0; t <= max; t += max / 4) { el('line', { x1: L, x2: W - Rt, y1: y(t), y2: y(t), class: 'gd' }, svg); txt(svg, L - 8, y(t) + 4, Math.round(t), { 'text-anchor': 'end' }); }
+  load.forEach((v, i) => {
+    const cx = L + slot * i + slot / 2, over = v > cap;
+    const hit = el('rect', { x: cx - slot / 2, y: Tp, width: slot, height: H - Tp - Bt, class: 'hit' }, svg);
+    el('path', { d: `M${cx - bw / 2} ${y(0)} V${y(v) + 4} q0 -4 4 -4 H${cx + bw / 2 - 4} q4 0 4 4 V${y(0)} Z`, class: 'm' + (over ? ' over' : '') }, svg);
+    if (lo && hi) { el('line', { x1: cx, x2: cx, y1: y(lo[i]), y2: y(hi[i]), stroke: 'var(--ink)', 'stroke-width': 1.5, opacity: .7 }, svg);
+      [lo[i], hi[i]].forEach(q => el('line', { x1: cx - 6, x2: cx + 6, y1: y(q), y2: y(q), stroke: 'var(--ink)', 'stroke-width': 1.5, opacity: .7 }, svg)); }
+    if (over) txt(svg, cx, y(hi ? hi[i] : v) - 7, '+' + (v - cap) + ' h', { 'text-anchor': 'middle', class: 'lbl-in', style: 'fill:var(--over)' });
+    txt(svg, cx, H - 10, weeks[i], { 'text-anchor': 'middle' });
+    bindTip(hit, `<b>${weeks[i]}</b><br>Expected load ${v} h${lo ? `<br>Likely range ${lo[i]}–${hi[i]} h` : ''}<br>Available ${cap} h<br>${over ? 'Over by ' + (v - cap) + ' h' : (cap - v) + ' h spare'}`);
+  });
+  el('line', { x1: L, x2: W - Rt, y1: y(cap), y2: y(cap), stroke: 'var(--ink-2)', 'stroke-width': 1.75, 'stroke-dasharray': '6 4' }, svg);
+  txt(svg, W - Rt + 6, y(cap) + 4, cap + ' h', { class: 'lbl-in' });
+}
+const fcSel = $('#fcWc');
+fcSel.innerHTML = Object.keys(R.forecast.wc).map(n => `<option${n === B.name ? ' selected' : ''}>${n}</option>`).join('');
+fcSel.addEventListener('change', drawFc);
+function drawFc() {
+  const n = fcSel.value, f = R.forecast.wc[n], over = f.p50.filter(v => v > f.cap);
+  $('#fcTitle').textContent = n; $('#fc').setAttribute('aria-label', `Forecast weekly load for ${n} against ${f.cap} available hours`);
+  cols($('#fc'), f.p50, f.cap, f.lo, f.hi, R.forecast.weeks);
+  const peak = Math.round(Math.max(...f.p50) / f.cap * 100);
+  $('#fcSum').innerHTML = over.length ? `<b style="color:var(--over)">${over.length} of 8 weeks over capacity.</b> Peak load reaches ${peak}% of available hours. <a href="#whatif">Test options →</a>`
+    : `<b style="color:var(--good)">Within capacity all 8 weeks.</b> Peak load is ${peak}% of available hours.`;
+}
+let scen = 'base';
+const base = R.scenarios[0];
+$('#sc').innerHTML = R.scenarios.map(s => `<button aria-pressed="${s.id === scen}" data-sc="${s.id}"><b>${s.label}</b><small>${s.note}</small></button>`).join('');
+$$('#sc button').forEach(b => b.addEventListener('click', () => { scen = b.dataset.sc; $$('#sc button').forEach(x => x.setAttribute('aria-pressed', x === b)); drawWf(); }));
+function d(v, b, unit, goodDown = true) { const k = v - b; if (!k) return '<span class="delta">no change</span>'; const better = goodDown ? k < 0 : k > 0; return `<span class="delta ${better ? 'dn' : 'up'}">${k > 0 ? '+' : ''}${k}${unit} vs plan</span>`; }
+function drawWf() {
+  const s = R.scenarios.find(x => x.id === scen);
+  $('#outc').innerHTML = `<div><span class="lbl">Weeks over</span><b>${s.weeks_over}<small class="muted" style="font-size:.8rem"> / 8</small></b>${d(s.weeks_over, base.weeks_over, '')}</div>
+    <div><span class="lbl">Peak load</span><b>${s.peak}%</b>${d(s.peak, base.peak, ' pts')}</div>
+    <div><span class="lbl">Hours short</span><b>${s.overload_h} h</b>${d(s.overload_h, base.overload_h, ' h')}</div>`;
+  cols($('#wf'), s.load, s.cap, null, null, R.forecast.weeks);
+  $('#wf').setAttribute('aria-label', `${s.label}: weekly load against ${s.cap} hours`);
+  $('#sideNote').innerHTML = s.side ? `<div class="side"><b>Watch out:</b> ${s.side.wc} would then be over capacity in ${s.side.weeks_over} of 8 weeks, peaking at ${s.side.peak}%. The constraint moves instead of going away.</div>` : '';
+}
+
+/* export */
+const toast = $('#toast');
+$$('[data-x]').forEach(b => b.addEventListener('click', () => { toast.textContent = `${b.dataset.x}: exports are available in a live workspace. This preview uses synthetic data.`; toast.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => toast.classList.remove('on'), 3200); }));
+
+go(location.hash.slice(1) || 'workspace');
+</script>
+
+<script src="../assets/track.js?v=1" defer></script>
+</body></html>
