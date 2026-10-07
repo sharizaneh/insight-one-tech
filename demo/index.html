@@ -399,7 +399,9 @@ function go(id) {
   if (id === 'dashboard') drawDash(); if (id === 'forecast') drawFc(); if (id === 'whatif') drawWf();
   tip.classList.remove('on');
 }
-addEventListener('hashchange', () => { go(location.hash.slice(1)); $('#main').scrollIntoView({ block: 'start' }); });
+addEventListener('hashchange', () => { go(location.hash.slice(1)); if (scrollY > 0) scrollTo(0, 0); });
+/* when embedded on insightonetech.com, report height so the frame grows instead of scrolling */
+if (parent !== window && 'ResizeObserver' in window) new ResizeObserver(() => parent.postMessage({ ioDemoHeight: document.documentElement.scrollHeight }, 'https://www.insightonetech.com')).observe(document.body);
 const notes = $('#notes');
 if (notes) { try { notes.checked = localStorage.getItem('io-notes') === '1'; } catch (e) {} document.body.classList.toggle('show-notes', notes.checked);
   notes.addEventListener('change', () => { document.body.classList.toggle('show-notes', notes.checked); try { localStorage.setItem('io-notes', notes.checked ? '1' : '0'); } catch (e) {} }); }
