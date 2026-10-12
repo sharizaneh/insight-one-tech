@@ -1,0 +1,56 @@
+<!-- /services — replaces the employer-derived "BC steel fabricator" case study.
+     Paste into a Code block in place of the old section. Keeps the #case-study anchor so existing links still land here.
+     All figures come from Sample Plant, a generated (synthetic) plant. No customer or employer data. -->
+<section id="case-study" class="io-we" aria-labelledby="io-we-h">
+<style>
+.io-we{--bg:#07090B;--panel:#0D1114;--rule:#1F272C;--ink:#E9EEF0;--ink2:#A9B4BB;--ink3:#7D8991;--acc:#7FD3E8;--over:#F08A4B;--amber:#F2B35B;
+  color:var(--ink);padding:clamp(56px,8vw,112px) 0;font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.io-we *{box-sizing:border-box}
+.io-we .w{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
+.io-we .lbl{display:inline-flex;gap:8px;align-items:center;font:500 .72rem/1.2 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.io-we .syn{color:var(--amber);border:1px solid rgba(242,179,91,.35);border-radius:999px;padding:4px 9px}
+.io-we h2{font-family:"Archivo","Arial Narrow",Arial,sans-serif;font-stretch:112%;font-weight:750;font-size:clamp(1.7rem,3.6vw,2.6rem);line-height:1.12;letter-spacing:-.01em;margin:14px 0 12px;max-width:22ch;color:var(--ink)}
+.io-we .lede{max-width:64ch;color:var(--ink2);font-size:1.02rem;line-height:1.6;margin:0}
+.io-we .kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:clamp(28px,4vw,40px) 0}
+.io-we .k{border:1px solid var(--rule);border-radius:14px;padding:18px;background:var(--panel)}
+.io-we .k b{display:block;font:600 clamp(1.6rem,3vw,2.1rem)/1 "IBM Plex Mono",ui-monospace,monospace;color:var(--ink);font-variant-numeric:tabular-nums}
+.io-we .k b small{font-size:.5em;color:var(--ink3);margin-left:4px}
+.io-we .k.hot b{color:var(--over)}
+.io-we .k span{display:block;margin-top:8px;color:var(--ink2);font-size:.9rem;line-height:1.45}
+.io-we .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.io-we .c{border-top:1px solid var(--rule);padding-top:16px}
+.io-we .c h3{font:600 .78rem/1.2 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin:0 0 10px}
+.io-we .c p{margin:0;color:var(--ink2);line-height:1.6;font-size:.96rem}
+.io-we .c p strong{color:var(--ink);font-weight:600}
+.io-we .cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:clamp(28px,4vw,40px)}
+.io-we .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:10px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--rule);color:var(--ink)}
+.io-we .btn.pri{background:#3BB7D6;border-color:#3BB7D6;color:#04141A}
+.io-we .btn:hover{border-color:var(--acc)}.io-we .btn.pri:hover{filter:brightness(1.08)}
+.io-we .btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.io-we .note{margin-top:14px;font-size:.84rem;color:var(--ink3)}
+@media (max-width:760px){.io-we .kpi,.io-we .cards{grid-template-columns:1fr}.io-we .btn{width:100%;justify-content:center}}
+</style>
+<div class="w">
+  <span class="lbl">Worked example <span class="syn">Synthetic data</span></span>
+  <h2 id="io-we-h">What the first analysis finds in a typical fabrication plant.</h2>
+  <p class="lede">Sample Plant is a fictional fabricator we generated to show the workflow end to end: 8 work centers from saw cutting to paint, two shifts, 13 weeks and 1,548 rows of production exports, uploaded in three different column layouts and mapped to one standard model.</p>
+
+  <div class="kpi" role="list">
+    <div class="k hot" role="listitem"><b>84.6<small>%</small></b><span>Utilization of Welding Cell 2, the primary constraint</span></div>
+    <div class="k hot" role="listitem"><b>7.5&rarr;18.6<small>%</small></b><span>Its downtime, first weeks to last weeks of the period</span></div>
+    <div class="k" role="listitem"><b>8<small>of 8</small></b><span>Upcoming weeks over its 78 h weekly capacity, peaking at 114%</span></div>
+  </div>
+
+  <div class="cards">
+    <div class="c"><h3>The question</h3><p>Where will the next eight weeks of work get stuck, and what is the smallest change that fixes it?</p></div>
+    <div class="c"><h3>What the scenarios showed</h3><p><strong>One extra evening operator</strong> on Welding Cell 2 clears every overloaded week. <strong>Moving 10% of welds</strong> to Welding Cell 1 only moves the problem: Cell 1 goes over capacity in 7 of 8 weeks.</p></div>
+    <div class="c"><h3>What you would get</h3><p>The constraint and why, the 8-week outlook, the scenarios compared, and a two-page management summary, built from your own exports.</p></div>
+  </div>
+
+  <div class="cta">
+    <a class="btn pri" href="/contact?source=services-example">Request a Manufacturing Data Assessment</a>
+    <a class="btn" href="/demo">Explore the demo workspace</a>
+  </div>
+  <p class="note">Sample Plant is generated data. It is not a customer, and no employer or client data was used.</p>
+</div>
+</section>
