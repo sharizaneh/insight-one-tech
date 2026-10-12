@@ -1,0 +1,48 @@
+<!-- Squarespace: Settings > Advanced > Code Injection > HEADER.
+     Replaces the existing ProfessionalService JSON-LD block (keep favicons / og tags above it).
+     No ratings, reviews or customer claims: only facts that are true today. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Organization", "ProfessionalService"],
+      "@id": "https://www.insightonetech.com/#org",
+      "name": "Insight One Tech",
+      "url": "https://www.insightonetech.com/",
+      "logo": "https://sharizaneh.github.io/insight-one-tech/apple-touch-icon.png",
+      "image": "https://sharizaneh.github.io/insight-one-tech/og.png",
+      "email": "info@insightonetech.com",
+      "description": "Manufacturing intelligence for steel fabricators and manufacturing job shops: capacity and utilization analysis, bottleneck detection, production forecasting and what-if scenarios built from the production exports a plant already has.",
+      "slogan": "Turn manufacturing data into better production decisions.",
+      "address": { "@type": "PostalAddress", "addressRegion": "BC", "addressCountry": "CA" },
+      "areaServed": [ { "@type": "Country", "name": "Canada" }, { "@type": "Country", "name": "United States" } ],
+      "knowsAbout": [
+        "Manufacturing intelligence", "Capacity planning", "Bottleneck analysis", "Downtime analysis",
+        "Production forecasting", "What-if simulation", "Steel fabrication", "Job shop scheduling", "Manufacturing analytics"
+      ],
+      "sameAs": [ "https://www.linkedin.com/company/insight-one-tech/" ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Manufacturing intelligence",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Manufacturing Data Assessment", "url": "https://www.insightonetech.com/contact",
+            "description": "A scoping call and a first pass of your existing production export through the Insight One workflow, with a short findings summary." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Capacity and utilization analysis", "url": "https://www.insightonetech.com/services" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Bottleneck and downtime analysis", "url": "https://www.insightonetech.com/services" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Production forecasting and order risk", "url": "https://www.insightonetech.com/services" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "What-if capacity scenarios", "url": "https://www.insightonetech.com/services" } }
+        ]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.insightonetech.com/#website",
+      "url": "https://www.insightonetech.com/",
+      "name": "Insight One Tech",
+      "publisher": { "@id": "https://www.insightonetech.com/#org" },
+      "inLanguage": "en-CA"
+    }
+  ]
+}
+</script>

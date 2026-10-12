@@ -5,7 +5,8 @@
      template_download  {file_type, page}
      contact_click      {method, page}            (mailto / tel)
      form_start         {form, page}              (first field focused)
-     generate_lead      {form, page}              (Squarespace form success = primary conversion)
+     generate_lead      {form, page, lead_source} (Squarespace form success = primary conversion)
+     demo_step          {step, page}              (sent by the /demo embed)
    Load once per page:  <script src="https://sharizaneh.github.io/insight-one-tech/assets/track.js?v=1" defer></script> */
 (function () {
   if (window.__ioTrack) return; window.__ioTrack = 1;
@@ -71,9 +72,29 @@
     var ok = document.querySelector('.form-submission-text:not(.hidden), .form-submission-html:not(.hidden), [data-form-submitted="true"]');
     if (ok && ok.offsetParent !== null) {
       sent = true;
-      send('generate_lead', { form: 'contact', value: 1, currency: 'CAD' });
+      send('generate_lead', { form: 'contact', value: 1, currency: 'CAD', lead_source: src || 'direct' });
     }
   }
+  // Lead source: remember where the visitor came from (?source=, else the previous page on this site)
+  // and copy it into any form field whose name or label mentions "source" (e.g. a Squarespace Hidden field "Source").
+  var src = '';
+  try {
+    var q = new URLSearchParams(location.search).get('source');
+    if (q) sessionStorage.setItem('io_source', q.slice(0, 40));
+    else if (document.referrer.indexOf(location.origin) === 0 && !sessionStorage.getItem('io_source'))
+      sessionStorage.setItem('io_source', 'page:' + (new URL(document.referrer).pathname || '/'));
+    src = sessionStorage.getItem('io_source') || '';
+  } catch (_) {}
+  function fillSource() {
+    if (!src) return;
+    [].forEach.call(document.querySelectorAll('form input'), function (i) {
+      var key = ((i.name || '') + ' ' + (i.id || '') + ' ' + (i.getAttribute('aria-label') || '')).toLowerCase();
+      if (/source/.test(key) && !i.value) { i.value = src; }
+    });
+  }
+  fillSource();
+  document.addEventListener('focusin', fillSource);
+  document.addEventListener('submit', fillSource, true);
   if ('MutationObserver' in window) {
     new MutationObserver(checkSuccess).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style'] });
   }
