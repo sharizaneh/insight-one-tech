@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, follow"><link rel="canonical" href="https://www.insightonetech.com/demo">
-<link rel="icon" href="../favicon.svg" type="image/svg+xml"><title>Insight One Workspace</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><title>Insight One Workspace · Synthetic demo</title>
 <meta name="description" content="Insight One manufacturing intelligence workspace, shown with a synthetic sample plant.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -192,6 +192,24 @@ main{padding:22px clamp(16px,3vw,32px) 60px;min-width:0}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.88rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;max-width:calc(100% - 32px)}
 .toast.on{opacity:1}
 .cta{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;border:1px solid var(--accent);background:var(--accent-soft);border-radius:var(--r);padding:16px 18px}
+/* public-demo additions (2026-10-11) */
+.synbar{display:flex;gap:8px;align-items:center;padding:8px 20px;border-bottom:1px solid var(--rule);background:var(--amber-soft);color:var(--ink-2);font-size:.82rem;line-height:1.4}
+.synbar b{color:var(--amber);font:600 .68rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.top .cta{margin-left:auto;padding:7px 12px;font-size:.84rem}
+.stepnav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px;padding-top:16px;border-top:1px solid var(--rule)}
+.stepnav .prev{font-family:var(--f-body);color:var(--ink-2);text-decoration:none;font-size:.88rem}.stepnav .prev:hover{color:var(--ink)}
+.stepnav .sp{flex:1}
+:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+@media (max-width:640px){
+  .top{position:static;padding:10px 14px;gap:8px}.top .cta{width:100%;justify-content:center;order:9}
+  .synbar{padding:8px 14px}
+  table.ds thead{display:none}
+  table.ds,table.ds tbody,table.ds tr,table.ds td{display:block;width:100%}
+  table.ds tr{padding:12px 0;border-bottom:1px solid var(--rule)}
+  table.ds td{border:0!important;padding:2px 0!important}
+  table.ds td[data-k]::before{content:attr(data-k) " · ";font:500 .7rem/1.6 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .stepnav .btn{flex:1 1 100%;justify-content:center}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -201,7 +219,9 @@ main{padding:22px clamp(16px,3vw,32px) 60px;min-width:0}
   <div class="org"><span class="lbl">Workspace</span><b>Sample Plant</b></div>
   <span class="syn">Synthetic data</span>
   <span class="sp"></span>
+  <a class="btn pri cta" href="https://www.insightonetech.com/contact?source=demo-header" target="_top">Request a Manufacturing Data Assessment</a>
 </header>
+<div class="synbar" role="note"><b>Demo</b><span>Sample Plant is fictional. Every file, number and recommendation here is generated synthetic data, not customer or employer data.</span></div>
 
 <div class="shell">
   <nav class="rail" aria-label="Workflow">
@@ -229,8 +249,8 @@ main{padding:22px clamp(16px,3vw,32px) 60px;min-width:0}
       <div class="tbl-wrap"><table class="ds">
         <thead><tr><th>Dataset</th><th>Source</th><th>Rows</th><th>Data quality</th><th>Status</th></tr></thead>
         <tbody>
-          <tr><td><b>Production · Jul–Sep 2026</b><br><span class="small muted">v2 · uploaded by Plant Manager</span></td><td class="num small">mes_export_q3.csv</td><td class="num">1,548</td><td class="num">92 / 100</td><td><span class="chip hi">Analysed</span></td></tr>
-          <tr><td><b>Production · Jun 2026</b><br><span class="small muted">v1 · Insight One template</span></td><td class="num small">insight-one-template.xlsx</td><td class="num">512</td><td class="num">97 / 100</td><td><span class="chip ghost">Archived</span></td></tr>
+          <tr><td><b>Production · Jul–Sep 2026</b><br><span class="small muted">v2 · uploaded by Plant Manager</span></td><td class="num small" data-k="Source">mes_export_q3.csv</td><td class="num" data-k="Rows">1,548</td><td class="num" data-k="Data quality">92 / 100</td><td><span class="chip hi">Analysed</span></td></tr>
+          <tr><td><b>Production · Jun 2026</b><br><span class="small muted">v1 · Insight One template</span></td><td class="num small" data-k="Source">insight-one-template.xlsx</td><td class="num" data-k="Rows">512</td><td class="num" data-k="Data quality">97 / 100</td><td><span class="chip ghost">Archived</span></td></tr>
         </tbody></table></div></div>
     <div class="grid3">
       <div class="panel"><span class="lbl">Saved mapping</span><h3 style="margin:6px 0 4px">MES export · 11 columns</h3><p class="small muted">Applied automatically the next time a file with the same columns arrives.</p></div>
@@ -247,7 +267,7 @@ main{padding:22px clamp(16px,3vw,32px) 60px;min-width:0}
       <div class="panel path"><span class="chip info" style="justify-self:start">Simple</span><h2>Fill in the template</h2>
         <p class="small muted">Fifteen standard fields, five of them required. Columns match automatically, so there is nothing to map.</p>
         <div class="steps"><span>Download</span>→<span>Fill in</span>→<span>Upload</span></div>
-        <a class="btn" href="https://www.insightonetech.com/data-template" target="_blank" rel="noopener">Get the template</a></div>
+        <a class="btn" href="https://www.insightonetech.com/data-template" target="_top">Get the template</a></div>
       <div class="panel path"><span class="chip info" style="justify-self:start">Smart</span><h2>Upload your own file</h2>
         <p class="small muted">An ERP, MES or timesheet export, or a spreadsheet. Insight One suggests how each column maps, and you confirm.</p>
         <div class="steps"><span>Upload</span>→<span>Confirm mapping</span>→<span>Analyse</span></div></div>
@@ -361,7 +381,7 @@ main{padding:22px clamp(16px,3vw,32px) 60px;min-width:0}
       <div class="exo"><span class="ic">CSV</span><div><b>Standardized data</b><div class="small muted">Your rows in the Insight One standard layout, with source row numbers.</div></div><button class="btn" data-x="Standardized data">Export</button></div>
     </div>
     <div class="cta" data-public><div><h2>See this on your own data</h2><p class="small muted" style="margin-top:4px">A Manufacturing Data Assessment runs your existing exports through this workflow and walks your team through the results.</p></div>
-      <a class="btn pri" href="https://www.insightonetech.com/contact" target="_blank" rel="noopener">Request a Manufacturing Data Assessment</a></div>
+      <a class="btn pri" href="https://www.insightonetech.com/contact?source=demo-export" target="_top">Request a Manufacturing Data Assessment</a></div>
   </section>
   </main>
 </div>
@@ -399,7 +419,15 @@ function go(id) {
   if (id === 'dashboard') drawDash(); if (id === 'forecast') drawFc(); if (id === 'whatif') drawWf();
   tip.classList.remove('on');
 }
-addEventListener('hashchange', () => { go(location.hash.slice(1)); if (scrollY > 0) scrollTo(0, 0); });
+const NAMES = {workspace:'Workspace',upload:'Upload data',mapping:'Map columns',quality:'Check quality',dashboard:'Capacity & constraints',forecast:'Forecast',whatif:'What-if',export:'Export results'};
+$$('.screen').forEach(sc => { const i = order.indexOf(sc.dataset.screen); if (i < 0) return;
+  const nav = document.createElement('div'); nav.className = 'stepnav';
+  const prev = i > 0 ? `<a class="prev" href="#${order[i-1]}">← ${NAMES[order[i-1]]}</a>` : '';
+  const next = i < order.length - 1 ? `<a class="btn pri" href="#${order[i+1]}">Next: ${NAMES[order[i+1]]} →</a>`
+    : '';
+  nav.innerHTML = prev + '<span class="sp"></span>' + next; sc.appendChild(nav); });
+addEventListener('hashchange', () => { go(location.hash.slice(1)); if (scrollY > 0) scrollTo(0, 0);
+  if (parent !== window) try { parent.postMessage({ ioDemoNav: location.hash.slice(1) }, 'https://www.insightonetech.com'); } catch (e) {} });
 /* when embedded on insightonetech.com, report height so the frame grows instead of scrolling */
 if (parent !== window && 'ResizeObserver' in window) new ResizeObserver(() => parent.postMessage({ ioDemoHeight: document.documentElement.scrollHeight }, 'https://www.insightonetech.com')).observe(document.body);
 const notes = $('#notes');
