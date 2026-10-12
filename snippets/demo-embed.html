@@ -1,0 +1,25 @@
+<!-- Insight One demo workspace embed for insightonetech.com/demo (Squarespace Code block, "Display source" off).
+     The frame grows to its content, so the page scrolls normally on phones. Synthetic data only. -->
+<div id="io-demo-wrap" style="position:relative;min-height:760px;border:1px solid #1F272C;border-radius:14px;overflow:hidden;background:#07090B">
+  <div id="io-demo-load" aria-hidden="true" style="position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:#7D8991;font:500 12px/1.6 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.12em">LOADING THE DEMO WORKSPACE<br>SAMPLE PLANT · SYNTHETIC DATA</div>
+  <iframe id="io-demo" src="https://sharizaneh.github.io/insight-one-tech/demo/?theme=dark" title="Insight One demo workspace, shown with a synthetic sample plant"
+    style="position:relative;display:block;width:100%;height:760px;border:0;background:transparent" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+<p style="margin-top:10px;font-size:14px;opacity:.75">Trouble viewing it? <a href="https://sharizaneh.github.io/insight-one-tech/demo/" target="_blank" rel="noopener">Open the demo in its own tab</a>.</p>
+<script>
+(function () {
+  var ORIGIN = 'https://sharizaneh.github.io';
+  var f = document.getElementById('io-demo'), w = document.getElementById('io-demo-wrap'), l = document.getElementById('io-demo-load');
+  if (!f) return;
+  f.addEventListener('load', function () { if (l) l.style.display = 'none'; });
+  window.addEventListener('message', function (e) {
+    if (e.origin !== ORIGIN || !e.data || typeof e.data !== 'object') return;
+    if (e.data.ioDemoHeight) { f.style.height = Math.max(560, Math.ceil(e.data.ioDemoHeight)) + 'px'; w.style.minHeight = '0'; if (l) l.style.display = 'none'; }
+    if (e.data.ioDemoNav) {
+      var r = f.getBoundingClientRect();
+      if (r.top < 0 || r.top > innerHeight * 0.6) window.scrollTo({ top: window.pageYOffset + r.top - 84, behavior: 'smooth' });
+      if (window.ioTrack) window.ioTrack('demo_step', { step: String(e.data.ioDemoNav).slice(0, 20) });
+    }
+  });
+})();
+</script>

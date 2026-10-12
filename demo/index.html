@@ -2,6 +2,7 @@
 <meta name="robots" content="noindex, follow"><link rel="canonical" href="https://www.insightonetech.com/demo">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml"><title>Insight One Workspace · Synthetic demo</title>
 <meta name="description" content="Insight One manufacturing intelligence workspace, shown with a synthetic sample plant.">
+<script>try{var t=new URLSearchParams(location.search).get("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}if(window.parent!==window)document.documentElement.classList.add("embed");</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -193,6 +194,7 @@ main{padding:22px clamp(16px,3vw,32px) 60px;min-width:0}
 .toast.on{opacity:1}
 .cta{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;border:1px solid var(--accent);background:var(--accent-soft);border-radius:var(--r);padding:16px 18px}
 /* public-demo additions (2026-10-11) */
+.embed .shell{min-height:0}.embed .rail{position:static;height:auto;align-self:stretch;overflow:visible}
 .synbar{display:flex;gap:8px;align-items:center;padding:8px 20px;border-bottom:1px solid var(--rule);background:var(--amber-soft);color:var(--ink-2);font-size:.82rem;line-height:1.4}
 .synbar b{color:var(--amber);font:600 .68rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
 .top .cta{margin-left:auto;padding:7px 12px;font-size:.84rem}
@@ -429,7 +431,7 @@ $$('.screen').forEach(sc => { const i = order.indexOf(sc.dataset.screen); if (i 
 addEventListener('hashchange', () => { go(location.hash.slice(1)); if (scrollY > 0) scrollTo(0, 0);
   if (parent !== window) try { parent.postMessage({ ioDemoNav: location.hash.slice(1) }, 'https://www.insightonetech.com'); } catch (e) {} });
 /* when embedded on insightonetech.com, report height so the frame grows instead of scrolling */
-if (parent !== window && 'ResizeObserver' in window) new ResizeObserver(() => parent.postMessage({ ioDemoHeight: document.documentElement.scrollHeight }, 'https://www.insightonetech.com')).observe(document.body);
+if (parent !== window && 'ResizeObserver' in window) { let lastH = 0; new ResizeObserver(() => { const h = document.body.scrollHeight; if (Math.abs(h - lastH) < 2) return; lastH = h; parent.postMessage({ ioDemoHeight: h }, 'https://www.insightonetech.com'); }).observe(document.body); }
 const notes = $('#notes');
 if (notes) { try { notes.checked = localStorage.getItem('io-notes') === '1'; } catch (e) {} document.body.classList.toggle('show-notes', notes.checked);
   notes.addEventListener('change', () => { document.body.classList.toggle('show-notes', notes.checked); try { localStorage.setItem('io-notes', notes.checked ? '1' : '0'); } catch (e) {} }); }
