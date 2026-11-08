@@ -1,0 +1,27 @@
+name: Snapshot live Squarespace site
+on:
+  push:
+    branches: [site-migration]
+    paths: [.github/workflows/snapshot.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  snap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pages
+        run: |
+          mkdir -p migration/source
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36"
+          for p in "" platform services demo how-it-works about faq contact data-template privacy; do
+            n=${p:-home}
+            curl -sSL -A "$UA" "https://www.insightonetech.com/$p" -o "migration/source/$n.html" -w "$n %{http_code} %{size_download}\n"
+          done
+          curl -sSL -A "$UA" https://www.insightonetech.com/sitemap.xml -o migration/source/sitemap.xml
+          curl -sSL -A "$UA" https://www.insightonetech.com/robots.txt -o migration/source/robots.txt
+      - name: Commit
+        run: |
+          git config user.name "snapshot-bot"; git config user.email "actions@github.com"
+          git add migration && git commit -m "Snapshot of live Squarespace pages" && git push || echo nothing
